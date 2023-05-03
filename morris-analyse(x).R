@@ -1,35 +1,36 @@
-###--Esta FUNÇÃO tem o objetivo de análisar a Sensibilidade com Morris.
+###--This function has the goal to analyse the sensitivity with Morris method
 
-pasta=c("Tese_Parte 2/2. Morris SA")
+#--input arguments
+pasta=c("name of the folder/subfolder)
 
 #morris.analyse(pasta)
 morris.analyse=function (pasta){
-      #---Abrir o package 'sensitivity'
+      #---Open the 'sensitivity' package
       library(sensitivity)
       
-      #---Arquivo que contém os dados dos fatores "input.csv"
+      #---File with the factors "input.csv"
       factors.path=c(paste(pasta,"/morris-input.csv",sep=""))
-      #---Class de cada coluna do arquivo de entrada "input.csv"
+      #---Class from each column of the file "input.csv"
       factors.classes=c("character","character","numeric","numeric")
-      #---Ler o arquivo de entrada "input.csv"
+      #---Read the input file "input.csv"
       factors=read.table(file=factors.path,header=TRUE,sep=",",colClasses=factors.classes)
       
-      #---Discretizar o arquivo para facilitar os cálculos
+      #---Discretizar o arquivo para facilitar os cÃ¡lculos
       factors.names=factors[[1]]
       factors.lower=factors[[3]]
       factors.upper=factors[[4]]
       
-      #---Buscar a amostra salva antes da simulação
+      #---Buscar a amostra salva antes da simulaÃ§Ã£o
       dget.folder=c(paste(pasta,"/morris-dput.R",sep=""))
       morris.funcao=dget(dget.folder)
       #morris.funcao=dget("Morris teste 2/morris-dput.R")
       
-      #---Buscar os resultados das simulações em quantas variáveis houverem
+      #---Buscar os resultados das simulaÃ§Ãµes em quantas variÃ¡veis houverem
       results.path=c(paste(pasta,"/morris-results.csv",sep=""))
       results=read.table(file=results.path,header=TRUE,sep=",",colClasses="numeric")
       results.ncol=ncol(results)
       
-      #---Atribuir valores iniciais NULL para as variáveis da iteração
+      #---Atribuir valores iniciais NULL para as variÃ¡veis da iteraÃ§Ã£o
       output.mu=NULL
       output.mustar=NULL
       output.sigma=NULL
@@ -39,12 +40,12 @@ morris.analyse=function (pasta){
       output.sigma.names=NULL
       output.all.names=NULL
       
-      #---Processo iterativo para analisar em cada variável dependente
+      #---Processo iterativo para analisar em cada variÃ¡vel dependente
       for(i in 1:results.ncol){
             
-            #---Usar a função tell() para retornar aos resultados de Morris de entrada
+            #---Usar a funÃ§Ã£o tell() para retornar aos resultados de Morris de entrada
             morris.results=tell(x=morris.funcao,y=results[[i]])
-            #---Buscar o nome das colunas (variáveis dependentes)
+            #---Buscar o nome das colunas (variÃ¡veis dependentes)
             variable.name=names(results[i])
             
             #---Organizar os resultados de MU, MU* e SIGMA conforme o package 'sensitivity' recomenda
@@ -52,7 +53,7 @@ morris.analyse=function (pasta){
             morris.mustar=apply(morris.results$ee,2,function(morris.results) mean(abs(morris.results)))
             morris.sigma=apply(morris.results$ee,2,sd)
             
-            #---Atribuir nomes diferentes para cada variável dependente em cada medida de sensibilidade
+            #---Atribuir nomes diferentes para cada variÃ¡vel dependente em cada medida de sensibilidade
             n1=c(paste(variable.name,c("_MU"),sep=""))
             n2=c(paste(variable.name,c("_MU*"),sep=""))
             n3=c(paste(variable.name,c("_SIGMA"),sep=""))
@@ -82,23 +83,23 @@ morris.analyse=function (pasta){
       a3=as.data.frame.matrix(output.sigma)   #Com os resultados de SIGMA
       a4=as.data.frame.matrix(output.all)     #Com os resultados de ALL
       
-      #---Atribuir nomes às colunas de cada tabela, conforme feito anteriormente
+      #---Atribuir nomes Ã s colunas de cada tabela, conforme feito anteriormente
       names(a1)=vector.n1
       names(a2)=vector.n2
       names(a3)=vector.n3
       names(a4)=vector.n4
       
-      #---Atribuir nomes para os arquivos de saída com as medidas de sensibilidade
+      #---Atribuir nomes para os arquivos de saÃ­da com as medidas de sensibilidade
       output.name1=c(paste(pasta,"/morris-output-MU.csv",sep=""))
       output.name2=c(paste(pasta,"/morris-output-MUSTAR.csv",sep=""))
       output.name3=c(paste(pasta,"/morris-output-SIGMA.csv",sep=""))
       output.name4=c(paste(pasta,"/morris-output-ALL.csv",sep=""))
       
-      #---Criar os arquivos de saída, sem o nome das linhas (variáveis de entrada)
+      #---Criar os arquivos de saÃ­da, sem o nome das linhas (variÃ¡veis de entrada)
       o1=write.table(x=a1,file=output.name1,sep=",",row.names=TRUE,col.names=NA)
       o2=write.table(x=a2,file=output.name2,sep=",",row.names=TRUE,col.names=NA)
       o3=write.table(x=a3,file=output.name3,sep=",",row.names=TRUE,col.names=NA)
       o4=write.table(x=a4,file=output.name4,sep=",",row.names=TRUE,col.names=NA)
       
-      return(c("Análise de sensibilidade realizada com sucesso"))
+      return(c("AnÃ¡lise de sensibilidade realizada com sucesso"))
 }
